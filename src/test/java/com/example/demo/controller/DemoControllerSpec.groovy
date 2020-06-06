@@ -20,7 +20,7 @@ class DemoControllerSpec extends Specification {
     }
 
     @Unroll
-    def "test"() {
+    def "/demo/hello/{name} 200"() {
         when:
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/demo/hello/" + name)
         def actual = mockMvc.perform(request).andReturn().getResponse()
@@ -33,6 +33,23 @@ class DemoControllerSpec extends Specification {
         name        | text
         "hosono"    | "hello hosono!"
         "yoshikazu" | "hello yoshikazu!"
+    }
+
+    @Unroll
+    def "/demo/hello/{name} 400"() {
+        when:
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/demo/hello/" + name)
+        def actual = mockMvc.perform(request).andReturn().getResponse()
+
+        then:
+        actual.getStatus() == 400
+        actual.getContentAsString() == text
+
+        where:
+        name          | text
+        "a"           | "hello.name: size must be between 2 and 10"
+        "aaaaaaaaaaa" | "hello.name: size must be between 2 and 10"
+        "00000"       | "hello.name: must match \"^[a-z]+\$\""
     }
 
 }
