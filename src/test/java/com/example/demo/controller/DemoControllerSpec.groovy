@@ -31,8 +31,8 @@ class DemoControllerSpec extends Specification {
 
         where:
         name        | text
-        "hosono"    | "hello hosono!" // success
-        "yoshikazu" | "hello yoshikaze!" // error
+        "hosono"    | "hello hosono!"
+        "yoshikazu" | "hello yoshikazu!"
     }
 
 }
