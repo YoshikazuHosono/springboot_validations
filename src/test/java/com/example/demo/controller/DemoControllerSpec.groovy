@@ -74,5 +74,26 @@ class DemoControllerSpec extends Specification {
         "yoshikazu" | "hello yoshikazu!"
     }
 
+    @Unroll
+    def "post /demo/hello/{name} 400"() {
+        when:
+        PostHelloRequest param = new PostHelloRequest()
+        param.setName(name)
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/demo/hello")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(param))
+        def actual = mockMvc.perform(request).andReturn().getResponse()
+
+        then:
+        actual.getStatus() == 400
+        actual.getContentAsString() == text
+
+        where:
+        name          | text
+        "a"           | "name : size must be between 2 and 10"
+        "aaaaaaaaaaa" | "name : size must be between 2 and 10"
+        "00000"       | "name : must match \"^[a-z]+\$\""
+    }
+
 
 }
