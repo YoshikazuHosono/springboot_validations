@@ -95,5 +95,38 @@ class DemoControllerSpec extends Specification {
         "00000"       | "name : must match \"^[a-z]+\$\""
     }
 
+    @Unroll
+    def "get /demo/hello/GroupedAnnotation/{name} 200"() {
+        when:
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/demo/hello/GroupedAnnotation/" + name)
+        def actual = mockMvc.perform(request).andReturn().getResponse()
+
+        then:
+        actual.getStatus() == 200
+        actual.getContentAsString() == text
+
+        where:
+        name        | text
+        "hosono"    | "hello hosono!"
+        "yoshikazu" | "hello yoshikazu!"
+    }
+
+    @Unroll
+    def "get /demo/hello/GroupedAnnotation/{name} 400"() {
+        when:
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/demo/hello/GroupedAnnotation/" + name)
+        def actual = mockMvc.perform(request).andReturn().getResponse()
+
+        then:
+        actual.getStatus() == 400
+        actual.getContentAsString() == text
+
+        where:
+        name          | text
+        "a"           | "getHelloGroupedAnnotation.name: size must be between 2 and 10"
+        "aaaaaaaaaaa" | "getHelloGroupedAnnotation.name: size must be between 2 and 10"
+        "00000"       | "getHelloGroupedAnnotation.name: must match \"^[a-z]+\$\""
+    }
+
 
 }

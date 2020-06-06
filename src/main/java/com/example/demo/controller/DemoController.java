@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.annotation.check.CheckName;
 import lombok.Data;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -23,6 +24,11 @@ public class DemoController {
     @PostMapping(value = "/hello", consumes = MediaType.APPLICATION_JSON_VALUE)
     public String postHello(@RequestBody @Valid PostHelloRequest request) {
         return "hello " + request.getName() + "!";
+    }
+
+    @GetMapping("/hello/GroupedAnnotation/{name}")
+    public String getHelloGroupedAnnotation(@PathVariable @Valid @CheckName String name) {
+        return "hello " + name + "!";
     }
 
 }
