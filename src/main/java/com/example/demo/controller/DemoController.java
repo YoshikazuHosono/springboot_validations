@@ -21,14 +21,19 @@ public class DemoController {
         return "hello " + name + "!";
     }
 
+    @GetMapping("/hello/GroupedAnnotation/{name}")
+    public String getHelloGroupedAnnotation(@PathVariable @Valid @CheckName String name) {
+        return "hello " + name + "!";
+    }
+
     @PostMapping(value = "/hello", consumes = MediaType.APPLICATION_JSON_VALUE)
     public String postHello(@RequestBody @Valid PostHelloRequest request) {
         return "hello " + request.getName() + "!";
     }
 
-    @GetMapping("/hello/GroupedAnnotation/{name}")
-    public String getHelloGroupedAnnotation(@PathVariable @Valid @CheckName String name) {
-        return "hello " + name + "!";
+    @PostMapping(value = "/hello/GroupedAnnotation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String postHelloGroupedAnnotation(@RequestBody @Valid PostHelloGroupedAnnotationRequest request) {
+        return "hello " + request.getName() + "!";
     }
 
 }
@@ -38,5 +43,11 @@ class PostHelloRequest {
     @NotNull
     @Size(min = 2, max = 10)
     @Pattern(regexp = "^[a-z]+$")
+    private String name;
+}
+
+@Data
+class PostHelloGroupedAnnotationRequest {
+    @CheckName
     private String name;
 }

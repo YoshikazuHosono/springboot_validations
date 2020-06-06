@@ -55,7 +55,7 @@ class DemoControllerSpec extends Specification {
     }
 
     @Unroll
-    def "post /demo/hello/{name} 200"() {
+    def "post /demo/hello 200"() {
         when:
         PostHelloRequest param = new PostHelloRequest()
         param.setName(name)
@@ -75,7 +75,7 @@ class DemoControllerSpec extends Specification {
     }
 
     @Unroll
-    def "post /demo/hello/{name} 400"() {
+    def "post /demo/hello 400"() {
         when:
         PostHelloRequest param = new PostHelloRequest()
         param.setName(name)
@@ -93,6 +93,7 @@ class DemoControllerSpec extends Specification {
         "a"           | "name : size must be between 2 and 10"
         "aaaaaaaaaaa" | "name : size must be between 2 and 10"
         "00000"       | "name : must match \"^[a-z]+\$\""
+        null          | "name : must not be null"
     }
 
     @Unroll
@@ -128,5 +129,47 @@ class DemoControllerSpec extends Specification {
         "00000"       | "getHelloGroupedAnnotation.name: must match \"^[a-z]+\$\""
     }
 
+
+    @Unroll
+    def "post /demo/hello/GroupedAnnotation 200"() {
+        when:
+        PostHelloRequest param = new PostHelloRequest()
+        param.setName(name)
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/demo/hello/GroupedAnnotation")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(param))
+        def actual = mockMvc.perform(request).andReturn().getResponse()
+
+        then:
+        actual.getStatus() == 200
+        actual.getContentAsString() == text
+
+        where:
+        name        | text
+        "hosono"    | "hello hosono!"
+        "yoshikazu" | "hello yoshikazu!"
+    }
+
+    @Unroll
+    def "post /demo/hello/GroupedAnnotation 400"() {
+        when:
+        PostHelloRequest param = new PostHelloRequest()
+        param.setName(name)
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/demo/hello/GroupedAnnotation")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(param))
+        def actual = mockMvc.perform(request).andReturn().getResponse()
+
+        then:
+        actual.getStatus() == 400
+        actual.getContentAsString() == text
+
+        where:
+        name          | text
+        "a"           | "name : size must be between 2 and 10"
+        "aaaaaaaaaaa" | "name : size must be between 2 and 10"
+        "00000"       | "name : must match \"^[a-z]+\$\""
+        null          | "name : must not be null"
+    }
 
 }
