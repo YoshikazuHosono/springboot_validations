@@ -49,9 +49,9 @@ class DemoControllerSpec extends Specification {
 
         where:
         name          | text
-        "a"           | "hello.name: size must be between 2 and 10"
-        "aaaaaaaaaaa" | "hello.name: size must be between 2 and 10"
-        "00000"       | "hello.name: must match \"^[a-z]+\$\""
+        "a"           | "getHello.name: size must be between 2 and 10"
+        "aaaaaaaaaaa" | "getHello.name: size must be between 2 and 10"
+        "00000"       | "getHello.name: must match \"^[a-z]+\$\""
     }
 
     @Unroll
