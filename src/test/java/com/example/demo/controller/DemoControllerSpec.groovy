@@ -172,4 +172,48 @@ class DemoControllerSpec extends Specification {
         null          | "name : must not be null"
     }
 
+    @Unroll
+    def "post /demo/CorrelationCheck/passwordCheck 200"() {
+        when:
+        PostHelloCorrelationCheckRequest param = new PostHelloCorrelationCheckRequest()
+        param.setPassword(password)
+        param.setConfirmPassword(confirmPassword)
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/demo/CorrelationCheck/passwordCheck")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(param))
+        def actual = mockMvc.perform(request).andReturn().getResponse()
+
+        then:
+        actual.getStatus() == 200
+        actual.getContentAsString() == text
+
+        where:
+        password     | confirmPassword | text
+        "password01" | "password01"    | "check ok!"
+        "password02" | "password02"    | "check ok!"
+    }
+
+    @Unroll
+    def "post /demo/CorrelationCheck/passwordCheck 400"() {
+        when:
+        PostHelloCorrelationCheckRequest param = new PostHelloCorrelationCheckRequest()
+        param.setPassword(password)
+        param.setConfirmPassword(confirmPassword)
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/demo/CorrelationCheck/passwordCheck")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(param))
+        def actual = mockMvc.perform(request).andReturn().getResponse()
+
+        then:
+        actual.getStatus() == 400
+        actual.getContentAsString() == text
+
+        where:
+        id | password      | confirmPassword | text
+        0  | null          | "password01"    | "password : must not be null"
+        1  | "password01"  | null            | "confirmPassword : must not be null"
+        5  | "password01"  | "password02"    | "passwordCheckResult : must be true"
+        6  | "password02"  | "password01"    | "passwordCheckResult : must be true"
+    }
+
 }
